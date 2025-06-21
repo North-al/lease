@@ -1,7 +1,9 @@
 package online.northal.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import online.northal.enums.GraphItemType;
 
 @EqualsAndHashCode(callSuper = true)
