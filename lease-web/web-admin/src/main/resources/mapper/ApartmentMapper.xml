@@ -22,8 +22,8 @@
                is_release,
                create_time,
                update_time,
-               ri.cnt as total_room_count,
-               ri.cnt-la.cnt as free_room_count
+               ifnull(ri.cnt, 0)                     as total_room_count,
+               ifnull(ri.cnt, 0) - ifnull(la.cnt, 0) as free_room_count
         from (SELECT *
               FROM apartment_info
         <where>

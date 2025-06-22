@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import online.northal.dto.ApartmentQueryDTO;
 import online.northal.result.ActionResult;
 import online.northal.service.ApartmentService;
+import online.northal.vo.ApartmentDetailVo;
 import online.northal.vo.ApartmentItemVo;
 import online.northal.vo.ApartmentSubmitVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,12 @@ public class ApartmentController {
     public ActionResult<Boolean> update(@RequestBody ApartmentSubmitVo vo) {
         this.apartmentService.edit(vo);
         return ActionResult.success(true, "更新公寓信息成功");
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "获取公寓信息详情")
+    public ActionResult<ApartmentDetailVo> getById(@PathVariable Long id) {
+        ApartmentDetailVo vo = this.apartmentService.getDetailById(id);
+        return ActionResult.success(vo);
     }
 }

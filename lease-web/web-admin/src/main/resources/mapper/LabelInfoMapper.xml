@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="online.northal.mapper.LabelInfoMapper">
+    <select id="selectListByApartmentId" resultType="online.northal.entity.LabelInfo">
+        select id,
+               type,
+               name
+        from label_info
+        where is_deleted = 0
+          and id in (select label_id
+                     from apartment_label
+                     where apartment_id = #{id}
+                       and is_deleted = 0)
+    </select>
+</mapper>

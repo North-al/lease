@@ -7,11 +7,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import online.northal.dto.ApartmentQueryDTO;
 import online.northal.entity.*;
 import online.northal.enums.GraphItemType;
-import online.northal.mapper.ApartmentMapper;
+import online.northal.mapper.*;
 import online.northal.service.*;
-import online.northal.vo.ApartmentItemVo;
-import online.northal.vo.ApartmentSubmitVo;
-import online.northal.vo.GraphVo;
+import online.northal.vo.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +36,18 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper, Apartment
 
     @Autowired
     private ApartmentMapper apartmentMapper;
+
+    @Autowired
+    private GraphMapper graphMapper;
+
+    @Autowired
+    private LabelInfoMapper labelInfoMapper;
+
+    @Autowired
+    private FacilityInfoMapper facilityInfoMapper;
+
+    @Autowired
+    private FeeValueMapper feeValueMapper;
 
     @Override
     @Transactional
@@ -79,6 +90,27 @@ public class ApartmentServiceImpl extends ServiceImpl<ApartmentMapper, Apartment
     @Override
     public IPage<ApartmentItemVo> selectPage(Page<ApartmentItemVo> voPage, ApartmentQueryDTO dto) {
         return this.apartmentMapper.selectByPage(voPage, dto);
+    }
+
+    @Override
+    public ApartmentDetailVo getDetailById(Long id) {
+        if (id == null) return null;
+        ApartmentInfo apartmentInfo = this.apartmentMapper.selectById(id);
+        if (apartmentInfo == null) return null;
+
+        ApartmentDetailVo vo = new ApartmentDetailVo();
+        List<GraphVo> graphVoList = this.graphMapper.selectListByItemIdAndType(id, GraphItemType.APARTMENT);
+        List<LabelInfo> labelInfoList = this.labelInfoMapper.selectListByApartmentId(id);
+        List<FacilityInfo> facilityInfoList = this.facilityInfoMapper.selectListByApartmentId(id);
+        List<FeeValueVo> feeValueVoList = this.feeValueMapper.selectListByApartmentId(id);
+
+        BeanUtils.copyProperties(apartmentInfo, vo);
+        vo.setGraphVoList(graphVoList);
+        vo.setLabelInfoList(labelInfoList);
+        vo.setFacilityInfoList(facilityInfoList);
+        vo.setFeeValueVoList(feeValueVoList);
+
+        return vo;
     }
 
     private void insertApartmentOtherInfo(ApartmentSubmitVo vo) {
